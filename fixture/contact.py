@@ -4,7 +4,8 @@ class ContactHelper:
 
     def open_contact_page(self):
         wd = self.app.wd
-        wd.find_element_by_link_text('Contacts').click()
+        if not (wd.current_url.endswith('/contacts') and len(wd.find_elements_by_link_text('Add contact')) > 0):
+            wd.find_element_by_link_text('Contacts').click()
 
     def open_add_contact_page(self):
         wd = self.app.wd
