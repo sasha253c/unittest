@@ -8,7 +8,7 @@ class Contact():
         self.id = firstname.rjust(20, '_') + lastname.rjust(20, '_')
 
     def __repr__(self):
-        return '%s' % (self.id)
+        return '%s:%s' % (self.firstname, self.lastname)
 
     def __eq__(self, other):
         return self.id == other.id

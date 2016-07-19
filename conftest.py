@@ -1,17 +1,24 @@
 import pytest
 from fixture.application import Application
+import json
+import os.path
 
 fixture = None
+target = None
 
 @pytest.fixture
 def app(request):
     global fixture
-    if fixture is None:
-        fixture = Application()
-    else:
-        if not fixture.is_valid():
-            fixture = Application()
-    fixture.session.ensure_login(username='kochynsashatest@gmail.com', password='123456')
+    global target
+    browser = request.config.getoption('--browser')
+    config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), request.config.getoption('--target'))
+    if target is None:
+        with open(config_file) as f:
+            target = json.load(f)
+
+    if fixture is None or not fixture.is_valid():
+        fixture = Application(browser=browser, baseUrl=target['baseUrl'])
+    fixture.session.ensure_login(username=target['username'], password=target['password'])
     return fixture
 
 @pytest.fixture(scope='session', autouse=True)
@@ -21,3 +28,7 @@ def stop(request):
         fixture.destroy()
     request.addfinalizer(fin)
     return fixture
+
+def pytest_addoption(parser):
+    parser.addoption('--browser', action="store", default='chrome')
+    parser.addoption('--target', action="store", default='target.json')

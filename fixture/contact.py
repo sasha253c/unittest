@@ -94,7 +94,7 @@ class ContactHelper:
             self.contact_cache = []
 
             for element in wd.find_elements_by_css_selector('li.single-contact'):
-                firstname, lastname = element.find_element_by_css_selector('h2.contact-name').text.split()
+                firstname, lastname = element.find_element_by_css_selector('h2.contact-name').text.split()[:2]
                 self.contact_cache.append(Contact(firstname=firstname, lastname=lastname))
         return list(self.contact_cache)
 
